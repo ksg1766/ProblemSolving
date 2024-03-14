@@ -1,8 +1,21 @@
 #include <iostream>
+#include <limits.h>
 
 using namespace std;
 
-int cache[50][50] = {};
+char control[8][8] =
+{ 
+    'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B',
+    'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W',
+    'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B',
+    'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W',
+    'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B', 
+    'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W',
+    'W', 'B', 'W', 'B', 'W', 'B', 'W', 'B',
+    'B', 'W', 'B', 'W', 'B', 'W', 'B', 'W',
+};
+
+void BoardChecker(char board[50][50], int& ws, int& hs, int& record);
 
 int main()
 {
@@ -10,65 +23,56 @@ int main()
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int N, M;
-    char arr[50][50] = {};
-    int iResult = 2500;
-    cin >> N >> M;
-    for (int i = 0; i < N; i++)
-        cin >> arr[i];
+    int width = 0;
+    int height = 0;
+    int result = INT_MAX;
 
+    char board[50][50] = {};
 
-    int iWcount0, iWcount1;
-    int iBcount0, iBcount1;
+    cin >> width >> height;
 
-    int a = 0, b;
-
-    while (a <= N - 8)
+    for (int i = 0; i < width; ++i)
     {
-        b = 0;
-        while (b <= M - 8)
+        cin >> board[i];
+    }
+
+    for (int i = 0; i + 8 <= width; ++i)
+    {
+        for (int j = 0; j + 8 <= height; ++j)
         {
-            iWcount0 = 0;
-            iWcount1 = 0;
-            for (int i = a; i < a + 8; ++i)
+            int record = 0;
+
+            BoardChecker(board, i, j, record);
+            result = min(result, record);
+        }
+    }
+
+    cout << result;
+
+    return 0;
+}
+
+void BoardChecker(char board[50][50], int& ws, int& hs, int& record)
+{
+    int wr = 0;
+    int br = 0;
+
+    for (int i = 0; i < 8; ++i)
+    {
+        int _i = i + ws;
+
+        for (int j = 0; j < 8; ++j)
+        {
+            if ((control[i][j] != board[_i][j + hs]))
             {
-                for (int j = b; j < b + 8; ++j)
-                {
-                    if (((i + j) % 2) == 0)
-                        if (arr[i][j] == 'W')
-                            ++iWcount0;
-
-                    if (((i + j) % 2) == 1)
-                        if (arr[i][j] == 'W')
-                            ++iWcount1;
-                }
-            }
-
-            int iAll = N * M;
-
-            iBcount0 = 32 - iWcount0;
-            iBcount1 = 32 - iWcount1;
-
-            int iGap0 = 64 - (iWcount0 + iBcount1);
-            int iGap1 = 64 - (iWcount1 + iBcount0);
-
-            if (iGap0 < iGap1)
-            {
-                if (iGap0 < iResult)
-                    iResult = iGap0;
+                ++wr;
             }
             else
             {
-                if (iGap1 < iResult)
-                    iResult = iGap1;
+                ++br;
             }
-
-            ++b;
         }
-        ++a;
     }
 
-    cout << iResult;
-
-    return 0;
+    record = min(wr, br);
 }
