@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void DFS(vector<int>& numbers, int& target, int depth, int& sum, int sign, int& count)
+void DFS(vector<int>& numbers, int& target, int depth, int sum, int& count)
 {
     if(depth < 0)
     {
@@ -15,18 +15,15 @@ void DFS(vector<int>& numbers, int& target, int depth, int& sum, int sign, int& 
         return;
     }
     
-    int tempSum = sum + sign * numbers[depth];
-    
-    DFS(numbers, target, depth - 1, tempSum, +1, count);
-    DFS(numbers, target, depth - 1, tempSum, -1, count);
+    DFS(numbers, target, depth - 1, sum + numbers[depth], count);
+    DFS(numbers, target, depth - 1, sum - numbers[depth], count);
 }
 
 int solution(vector<int> numbers, int target) {
     int answer = 0;
     int sum = 0;
         
-    DFS(numbers, target, numbers.size() - 1, sum, 1, answer);
-    DFS(numbers, target, numbers.size() - 1, sum, -1, answer);
+    DFS(numbers, target, numbers.size() - 1, sum, answer);
     
-    return answer / 2;
+    return answer;
 }
