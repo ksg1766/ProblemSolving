@@ -14,7 +14,7 @@ int BFS(vector<vector<bool>>& connected, vector<bool>& visited, vector<int>& dis
     q.push(start);
     visited[start] = true;
     
-    int size = start;
+    int& size = start;
     
     while(!q.empty())
     {
@@ -31,7 +31,7 @@ int BFS(vector<vector<bool>>& connected, vector<bool>& visited, vector<int>& dis
                 dist[i] = dist[curr] + 1;
                 
                 if(i == dest)
-                    return dist[i];
+                    return dist[i]; // 찾았으면 뒤는 skip
                 
                 q.push(i);
                 visited[i] = true;
@@ -45,7 +45,7 @@ int BFS(vector<vector<bool>>& connected, vector<bool>& visited, vector<int>& dis
 int solution(string begin, string target, vector<string> words) {
     int answer = 0;
     
-    words.push_back(begin);
+    words.push_back(begin); // 인접 행렬 생성 위해 begin 추가
     
     int size = words.size();
     int length = words[0].length();
@@ -55,11 +55,11 @@ int solution(string begin, string target, vector<string> words) {
     vector<vector<bool>> connected(size, vector<bool>(size, false));
     vector<bool> visited(size, false);
     vector<int> dist(size, 0);
-    
-    for(int i = 0; i < size; ++i)
+        
+    for(int i = 0; i < size; ++i) // 인접 행렬 생성
     {
         if(-1 == dest && target == words[i])
-            dest = i;
+            dest = i; // target 위치 찾았으면 skip
         
         for(int j = i + 1; j < size; ++j)
         {
@@ -68,10 +68,10 @@ int solution(string begin, string target, vector<string> words) {
             for (int k = 0; k < length; ++k)
             {
                 if (words[i][k] != words[j][k])
-                    ++count;
-                
-                if (count > 1)
-                    break;
+                {
+                    if (++count > 1)
+                        break;  // 2 이상이면 굳이 더 검사 X
+                }
             }
             
             if(1 == count)
@@ -79,7 +79,7 @@ int solution(string begin, string target, vector<string> words) {
         }
     }
     
-    answer = BFS(connected, visited, dist, size - 1, dest);
+    answer = BFS(connected, visited, dist, size - 1, dest); // begin은 size-1에 위치
     
     return answer;
 }
