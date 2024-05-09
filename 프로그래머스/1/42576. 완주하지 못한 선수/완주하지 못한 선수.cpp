@@ -7,19 +7,18 @@ using namespace std;
 string solution(vector<string> participant, vector<string> completion) {
     string answer = "";
     
-    unordered_map<string, vector<bool>> hash;
+    unordered_map<string, int> hash;
     
     for(auto& iter : completion)
     {
         const auto& pair = hash.find(iter);
         if (pair == hash.end())
         {
-            vector<bool> v(1, false);
-            hash.emplace(iter, v);
+            hash.emplace(iter, 1);
         }
         else
         {
-            pair->second.emplace_back(false);
+            ++pair->second;
         }
     }
     
@@ -33,12 +32,10 @@ string solution(vector<string> participant, vector<string> completion) {
         }
         else
         {
-            if(false == pair->second.empty())
-                pair->second.pop_back();
-            else
-            {
+            if(0 == pair->second)
                 return iter;
-            }
+            else
+                --pair->second;
         }
     }
 }
