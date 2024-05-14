@@ -4,44 +4,28 @@
 
 using namespace std;
 
-int mix(int min1, int min2)
-{
-    return min1 + 2 * min2;
-}
-
 int solution(vector<int> scoville, int K) {
     int answer = 0;
     
-    priority_queue<int, vector<int>, greater<int>> pq;
+    priority_queue<int, vector<int>, greater<int>> pq(scoville.begin(), scoville.end());
     
-    for(auto& iter : scoville)
-        pq.emplace(iter);
+    int min = 0;
     
-    while(true)
+    while(pq.top() < K)
     {
-        if(pq.empty())
+        if(pq.size() == 1)
         {
             answer = -1;
             break;
         }
         
-        int min1 = pq.top();
-        
-        if(min1 >= K)
-            break;
+        min = pq.top();
         
         pq.pop();
         
-        if(pq.empty())
-        {
-            answer = -1;
-            break;
-        }
-        
-        int min2 = pq.top();
+        pq.emplace(min + 2 * pq.top());
         pq.pop();
         
-        pq.emplace(min1 + 2 * min2);
         ++answer;
     }
     
